@@ -9,12 +9,43 @@
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" rel="stylesheet">
     <link href="../../css/gtvg.css" media="all" rel="stylesheet"
           th:href="@{/css/gtvg.css}" type="text/css"/>
+
+    <script src="http://www.webglearth.com/v2/api.js"></script>
+    <script>
+      function initialize() {
+        var positions = JSON.parse("[[${positions}]]".replace(/&quot;/g, '"')).filter((_, idx) => idx % 10 === 0);
+        var options = { zoom: 2.0, position: [positions[0].latitude, positions[0].longitude] };
+        var earth = new WE.map('earth_div', options);
+        WE.tileLayer('https://webglearth.github.io/webglearth2-offline/{z}/{x}/{y}.jpg', {
+              tileSize: 256,
+              minZoom: 0,
+              maxZoom: 16,
+              tms: true
+            }).addTo(earth);
+        WE.marker([positions[0].latitude, positions[0].longitude]).addTo(earth);
+        positions.splice(0, 1);
+        positions.forEach((item, index) => WE.marker([item.latitude, item.longitude], 'https://flyclipart.com/thumb2/dot-png-images-free-download-167838.png', 10, 10).addTo(earth));
+
+                // Start a simple rotation animation
+            var before = null;
+            requestAnimationFrame(function animate(now) {
+                var c = earth.getPosition();
+                var elapsed = before? now - before: 0;
+                before = now;
+                earth.setCenter([c[0], c[1] - 0.1*(elapsed/30)]);
+                requestAnimationFrame(animate);
+            });
+      }
+    </script>
+
 </head>
-<body>
+
+<body onload="initialize()" style="background-color: #A9A9A9;">
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+    <a class="navbar-brand" href="#">ISS Tracker</a>
+    <button aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"
+            class="navbar-toggler"
             data-target="#navbarNavAltMarkup" data-toggle="collapse" type="button">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -27,6 +58,8 @@
         </div>
     </div>
 </nav>
+
+<div class="mx-auto my-5" id="earth_div" style="width:600px;height:400px; padding:2px;background-color: black;"></div>
 
 <div class="col-8 mx-auto mt-5">
     <table class="table table-striped table-dark table-hover table-bordered">

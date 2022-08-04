@@ -1,4 +1,4 @@
-package com.bobrowski.IssTrackingApp.biz.service;
+package com.bobrowski.IssTrackingApp.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;

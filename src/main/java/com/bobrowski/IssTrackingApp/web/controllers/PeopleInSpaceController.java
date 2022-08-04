@@ -1,8 +1,7 @@
 package com.bobrowski.IssTrackingApp.web.controllers;
 
-
 import com.bobrowski.IssTrackingApp.biz.model.Astronaut;
-import com.bobrowski.IssTrackingApp.repositories.AstronautsInSpaceRepository;
+import com.bobrowski.IssTrackingApp.service.PeopleInSpaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,11 +14,11 @@ import java.util.List;
 @Controller
 @RequestMapping("/people-in-space")
 public class PeopleInSpaceController {
-    private final AstronautsInSpaceRepository astronautsRepository;
+    private final PeopleInSpaceService peopleInSpaceService;
 
     @GetMapping
     public String getReports(Model model){
-        List<Astronaut> astronauts = astronautsRepository.findAll();
+        List<Astronaut> astronauts = peopleInSpaceService.findAll();
         model.addAttribute("astronauts", astronauts);
         return "people-in-space";
     }

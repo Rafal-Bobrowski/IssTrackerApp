@@ -1,9 +1,7 @@
-package com.bobrowski.IssTrackingApp.biz.service;
+package com.bobrowski.IssTrackingApp.service;
 
 import com.bobrowski.IssTrackingApp.biz.model.IssPositionReport;
 import com.bobrowski.IssTrackingApp.biz.model.PeopleInSpaceReport;
-import com.bobrowski.IssTrackingApp.repositories.AstronautsInSpaceRepository;
-import com.bobrowski.IssTrackingApp.repositories.IssPositionReportsRepository;
 import com.google.gson.*;
 import org.springframework.stereotype.Component;
 
@@ -24,8 +22,8 @@ public class IssApiDataDownloader implements IssApiDataDownloaderInterface {
 
     private final HttpClient client;
     private final Gson gson;
-    private final IssPositionReportsRepository positionReportsRepository;
-    private final AstronautsInSpaceRepository astronautsRepository;
+    private final PositionReportsService positionReportsService;
+    private final PeopleInSpaceService astronautsService;
     private final String API_URL = "http://api.open-notify.org/";
 
     private final HttpRequest requestPositionReport = HttpRequest.newBuilder()
@@ -37,9 +35,9 @@ public class IssApiDataDownloader implements IssApiDataDownloaderInterface {
             .GET()
             .build();
 
-    public IssApiDataDownloader(IssPositionReportsRepository positionReportsRepository, AstronautsInSpaceRepository astronautsRepository) throws URISyntaxException {
-        this.positionReportsRepository = positionReportsRepository;
-        this.astronautsRepository = astronautsRepository;
+    public IssApiDataDownloader(PositionReportsService positionReportsRepository, PeopleInSpaceService astronautsRepository) throws URISyntaxException {
+        this.positionReportsService = positionReportsRepository;
+        this.astronautsService = astronautsRepository;
         this.client = HttpClient.newHttpClient();
         gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
             @Override
@@ -57,13 +55,13 @@ public class IssApiDataDownloader implements IssApiDataDownloaderInterface {
         PeopleInSpaceReport reportPeopleInSpace = getPeopleInSpaceReport();
 
         if (Objects.nonNull(reportISS)) {
-            positionReportsRepository.save(reportISS);
+            positionReportsService.save(reportISS);
         }
 
         if (Objects.nonNull(reportPeopleInSpace)) {
             reportPeopleInSpace.getAstronauts().forEach(astronaut -> {
-                if(astronautsRepository.findByName(astronaut.getName()).isEmpty()){
-                    astronautsRepository.save(astronaut);
+                if (astronautsService.findByName(astronaut.getName()).isEmpty()) {
+                    astronautsService.save(astronaut);
                 }
             });
         }

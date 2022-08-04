@@ -1,4 +1,4 @@
-package com.bobrowski.IssTrackingApp.biz.service;
+package com.bobrowski.IssTrackingApp.service;
 
 import org.springframework.stereotype.Component;
 
