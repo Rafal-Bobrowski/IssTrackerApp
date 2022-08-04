@@ -1,7 +1,9 @@
 package com.bobrowski.IssTrackingApp.biz.service;
 
-import com.bobrowski.IssTrackingApp.biz.model.ReportISS;
-import com.bobrowski.IssTrackingApp.repositories.ReportsRepository;
+import com.bobrowski.IssTrackingApp.biz.model.IssPositionReport;
+import com.bobrowski.IssTrackingApp.biz.model.PeopleInSpaceReport;
+import com.bobrowski.IssTrackingApp.repositories.AstronautsInSpaceRepository;
+import com.bobrowski.IssTrackingApp.repositories.IssPositionReportsRepository;
 import com.google.gson.*;
 import org.springframework.stereotype.Component;
 
@@ -18,19 +20,26 @@ import java.util.Objects;
 import java.util.TimeZone;
 
 @Component
-public class IssApiDataDownloader implements IssApiDataDownloaderInterface{
+public class IssApiDataDownloader implements IssApiDataDownloaderInterface {
 
     private final HttpClient client;
     private final Gson gson;
-    private final ReportsRepository reportsRepository;
+    private final IssPositionReportsRepository positionReportsRepository;
+    private final AstronautsInSpaceRepository astronautsRepository;
+    private final String API_URL = "http://api.open-notify.org/";
 
     private final HttpRequest requestPositionReport = HttpRequest.newBuilder()
-            .uri(new URI("http://api.open-notify.org/iss-now.json"))
+            .uri(new URI(API_URL + "iss-now.json"))
+            .GET()
+            .build();
+    private final HttpRequest requestListOfPeopleReport = HttpRequest.newBuilder()
+            .uri(new URI(API_URL + "astros.json"))
             .GET()
             .build();
 
-    public IssApiDataDownloader(ReportsRepository reportsRepository) throws URISyntaxException {
-        this.reportsRepository = reportsRepository;
+    public IssApiDataDownloader(IssPositionReportsRepository positionReportsRepository, AstronautsInSpaceRepository astronautsRepository) throws URISyntaxException {
+        this.positionReportsRepository = positionReportsRepository;
+        this.astronautsRepository = astronautsRepository;
         this.client = HttpClient.newHttpClient();
         gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
             @Override
@@ -41,20 +50,43 @@ public class IssApiDataDownloader implements IssApiDataDownloaderInterface{
         }).create();
     }
 
+    //TODO Removing astronauts returning from space.
     @Override
     public void run() {
-        ReportISS reportISS = getIssPositionReport();
-        if(Objects.nonNull(reportISS)) {
-            reportsRepository.save(reportISS);
+        IssPositionReport reportISS = getIssPositionReport();
+        PeopleInSpaceReport reportPeopleInSpace = getPeopleInSpaceReport();
+
+        if (Objects.nonNull(reportISS)) {
+            positionReportsRepository.save(reportISS);
+        }
+
+        if (Objects.nonNull(reportPeopleInSpace)) {
+            reportPeopleInSpace.getAstronauts().forEach(astronaut -> {
+                if(astronautsRepository.findByName(astronaut.getName()).isEmpty()){
+                    astronautsRepository.save(astronaut);
+                }
+            });
         }
     }
 
-    private ReportISS getIssPositionReport(){
+    private IssPositionReport getIssPositionReport() {
         HttpResponse<String> response;
         try {
             response = client.send(requestPositionReport, HttpResponse.BodyHandlers.ofString());
             String json = response.body();
-            return gson.fromJson(json, ReportISS.class);
+            return gson.fromJson(json, IssPositionReport.class);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private PeopleInSpaceReport getPeopleInSpaceReport() {
+        HttpResponse<String> response;
+        try {
+            response = client.send(requestListOfPeopleReport, HttpResponse.BodyHandlers.ofString());
+            String json = response.body();
+            return gson.fromJson(json, PeopleInSpaceReport.class);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

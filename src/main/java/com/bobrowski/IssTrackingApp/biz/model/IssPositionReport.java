@@ -1,7 +1,6 @@
 package com.bobrowski.IssTrackingApp.biz.model;
 
 import com.google.gson.annotations.SerializedName;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,11 +8,10 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-public class ReportISS{
+public class IssPositionReport {
 
     @Id
     @GeneratedValue

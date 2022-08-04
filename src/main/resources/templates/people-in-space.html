@@ -3,7 +3,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>ISS Records</title>
+    <title>People in space</title>
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" rel="stylesheet">
@@ -20,8 +20,8 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-item nav-link active" href="#">Position reports<span class="sr-only">(current)</span></a>
-            <a class="nav-item nav-link" href="/people-in-space">People in space</a>
+            <a class="nav-item nav-link" href="/reports-position">Position reports</a>
+            <a class="nav-item nav-link active" href="#">People in space<span class="sr-only">(current)</span></a>
             <a class="nav-item nav-link" href="#" th:remove="all">Pricing</a>
             <a class="nav-item nav-link disabled" href="#" th:remove="all">Disabled</a>
         </div>
@@ -33,31 +33,25 @@
         <thead>
         <tr>
             <th scope="col">Id</th>
-            <th scope="col">Longitude</th>
-            <th scope="col">Latitude</th>
-            <th scope="col">Date - Time</th>
-            <th scope="col">Status</th>
+            <th scope="col">Name</th>
+            <th scope="col">Spaceship</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="record : ${iss_reports}">
-            <th scope="row" th:text="${record.id}">1</th>
-            <td th:text="${record.IssPosition.longitude}">Mark</td>
-            <td th:text="${record.IssPosition.latitude}">Otto</td>
-            <td th:text="${record.localDateTime}">@mdo</td>
-            <td th:text="${record.message}">@mdo</td>
+        <tr th:each="astronaut : ${astronauts}">
+            <th scope="row" th:text="${astronaut.id}">1</th>
+            <td th:text="${astronaut.name}">Mark</td>
+            <td th:text="${astronaut.spaceship}">Otto</td>
         </tr>
         <tr th:remove="all">
             <th scope="row">2</th>
             <td>Jacob</td>
             <td>Thornton</td>
-            <td>@fat</td>
         </tr>
         <tr th:remove="all">
             <th scope="row">3</th>
             <td>Larry</td>
             <td>the Bird</td>
-            <td>@twitter</td>
         </tr>
         </tbody>
     </table>
