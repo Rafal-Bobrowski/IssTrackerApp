@@ -51,12 +51,8 @@ public class IssApiDataDownloader implements IssApiDataDownloaderInterface {
     //TODO Removing astronauts returning from space.
     @Override
     public void run() {
-        IssPositionReport reportISS = getIssPositionReport();
         PeopleInSpaceReport reportPeopleInSpace = getPeopleInSpaceReport();
-
-        if (Objects.nonNull(reportISS)) {
-            positionReportsService.save(reportISS);
-        }
+        IssPositionReport reportISS = getIssPositionReport();
 
         if (Objects.nonNull(reportPeopleInSpace)) {
             reportPeopleInSpace.getAstronauts().forEach(astronaut -> {
@@ -64,6 +60,10 @@ public class IssApiDataDownloader implements IssApiDataDownloaderInterface {
                     astronautsService.save(astronaut);
                 }
             });
+        }
+
+        if (Objects.nonNull(reportISS)) {
+            positionReportsService.save(reportISS);
         }
     }
 

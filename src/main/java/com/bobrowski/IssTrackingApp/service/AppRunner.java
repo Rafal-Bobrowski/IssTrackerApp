@@ -17,6 +17,6 @@ public class AppRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-        executorService.scheduleWithFixedDelay(issApiDataDownloader, 1, 5, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(issApiDataDownloader, 0, 5, TimeUnit.SECONDS);
     }
 }

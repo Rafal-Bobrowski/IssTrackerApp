@@ -10,9 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller
@@ -23,10 +21,8 @@ public class ReportsController {
 
     @GetMapping
     public String getReports(Model model){
-        List<IssPositionReport> issReports = positionReportsService.findAll();
-        Collections.reverse(issReports);
-        issReports = issReports.stream().limit(200).collect(Collectors.toList());
-        List<IssPosition> positions = issReports.stream().map(IssPositionReport::getIssPosition).collect(Collectors.toList());
+        List<IssPositionReport> issReports = positionReportsService.findAllReversedAndLimited(200);
+        List<IssPosition> positions = positionReportsService.findPositionsFromNewestLimited(200);
         model.addAttribute("positions", gson.toJson(positions));
         model.addAttribute("iss_reports", issReports);
         return "reports-position";
