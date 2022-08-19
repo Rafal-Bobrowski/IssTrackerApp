@@ -5,9 +5,12 @@ import com.bobrowski.IssTrackingApp.biz.model.IssPositionReport;
 import com.bobrowski.IssTrackingApp.service.PositionReportsService;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -19,12 +22,20 @@ public class ReportsController {
     private final PositionReportsService positionReportsService;
     private final Gson gson = new Gson();
 
-    @GetMapping
-    public String getReports(Model model){
-        List<IssPositionReport> issReports = positionReportsService.findAllReversedAndLimited(200);
+
+    @ModelAttribute("positions")
+    public String getPositions(){
         List<IssPosition> positions = positionReportsService.findPositionsFromNewestLimited(200);
-        model.addAttribute("positions", gson.toJson(positions));
-        model.addAttribute("iss_reports", issReports);
+        return gson.toJson(positions);
+    }
+
+    @ModelAttribute("iss_reports")
+    public Page<IssPositionReport> getIssReports(Pageable page){
+        return positionReportsService.findAll(page);
+    }
+
+    @GetMapping
+    public String getReports(){
         return "reports-position";
     }
 }

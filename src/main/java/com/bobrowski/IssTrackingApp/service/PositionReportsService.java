@@ -4,8 +4,13 @@ import com.bobrowski.IssTrackingApp.biz.model.IssPosition;
 import com.bobrowski.IssTrackingApp.biz.model.IssPositionReport;
 import com.bobrowski.IssTrackingApp.repositories.IssPositionReportsRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,13 +20,19 @@ import java.util.stream.Collectors;
 public class PositionReportsService {
     private final IssPositionReportsRepository positionReportsRepository;
 
+    public Page<IssPositionReport> findAll(Pageable pageable) {
+        Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
+        return positionReportsRepository.findAll(pageRequest);
+    }
+
     public List<IssPositionReport> findAll() {
-        return positionReportsRepository.findAll();
+        List<IssPositionReport> reports = new ArrayList<>();
+        positionReportsRepository.findAll().forEach(reports::add);
+        return reports;
     }
 
     private List<IssPositionReport> findAllLimited(int limit) {
-        return positionReportsRepository
-                .findAll()
+        return findAll()
                 .stream()
                 .limit(limit)
                 .collect(Collectors.toList());

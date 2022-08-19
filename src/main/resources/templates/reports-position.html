@@ -36,6 +36,7 @@
                 requestAnimationFrame(animate);
             });
       }
+
     </script>
 
 </head>
@@ -51,7 +52,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-item nav-link active" href="#">Position reports<span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link active" href="/reports-position">Position reports<span class="sr-only">(current)</span></a>
             <a class="nav-item nav-link" href="/people-in-space">People in space</a>
             <a class="nav-item nav-link" href="#" th:remove="all">Pricing</a>
             <a class="nav-item nav-link disabled" href="#" th:remove="all">Disabled</a>
@@ -77,7 +78,7 @@
             <th scope="row" th:text="${record.id}">1</th>
             <td th:text="${record.IssPosition.longitude}">Mark</td>
             <td th:text="${record.IssPosition.latitude}">Otto</td>
-            <td th:text="${record.localDateTime}">@mdo</td>
+            <td th:text="${#temporals.format(record.localDateTime, 'HH:mm:ss, dd MMMM, yyyy')}">@mdo</td>
             <td th:text="${record.message}">@mdo</td>
         </tr>
         <tr th:remove="all">
@@ -94,6 +95,22 @@
         </tr>
         </tbody>
     </table>
+    <nav aria-label="Page navigation">
+        <ul class="pagination pagination-dark">
+            <li class="page-item" th:classappend="${iss_reports.first} ? 'disabled'"><a class="page-link"
+                                                                                        th:href="@{reports-position(page=${iss_reports.number - 1})}">Previous</a>
+            </li>
+            <li class="page-item" th:classappend="${iss_reports.number} == ${page} ? 'active'"
+                th:each="page : ${#numbers.sequence(0, iss_reports.totalPages - 1)}"><a class="page-link"
+                                                                                th:href="@{reports-position(page=${page})}"
+                                                                                th:text="${page + 1}">1</a></li>
+            <li class="page-item" th:remove="all"><a class="page-link" href="#">2</a></li>
+            <li class="page-item" th:remove="all"><a class="page-link" href="#">3</a></li>
+            <li class="page-item" th:classappend="${iss_reports.last} ? 'disabled'"><a class="page-link"
+                                                                                       th:href="@{reports-position(page=${iss_reports.number + 1})}">Next</a>
+            </li>
+        </ul>
+    </nav>
 </div>
 
 </body>
