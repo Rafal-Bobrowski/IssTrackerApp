@@ -1,5 +1,6 @@
 package com.bobrowski.IssTrackingApp.service;
 
+import com.bobrowski.IssTrackingApp.biz.model.Astronaut;
 import com.bobrowski.IssTrackingApp.biz.model.IssPositionReport;
 import com.bobrowski.IssTrackingApp.biz.model.PeopleInSpaceReport;
 import com.google.gson.*;
@@ -14,6 +15,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
 
@@ -48,14 +50,20 @@ public class IssApiDataDownloader implements IssApiDataDownloaderInterface {
         }).create();
     }
 
-    //TODO Removing astronauts returning from space.
     @Override
     public void run() {
         PeopleInSpaceReport reportPeopleInSpace = getPeopleInSpaceReport();
         IssPositionReport reportISS = getIssPositionReport();
+        List<Astronaut> allAstronautsInDatabase = astronautsService.findAll();
 
         if (Objects.nonNull(reportPeopleInSpace)) {
-            reportPeopleInSpace.getAstronauts().forEach(astronaut -> {
+            List<Astronaut> astronautsFromReport = reportPeopleInSpace.getAstronauts();
+            allAstronautsInDatabase.forEach(astronaut -> {
+                if(!astronautsFromReport.contains(astronaut)){
+                    astronautsService.delete(astronaut);
+                }
+            });
+            astronautsFromReport.forEach(astronaut -> {
                 if (astronautsService.findByName(astronaut.getName()).isEmpty()) {
                     astronautsService.save(astronaut);
                 }

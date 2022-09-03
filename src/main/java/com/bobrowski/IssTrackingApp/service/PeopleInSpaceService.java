@@ -23,4 +23,8 @@ public class PeopleInSpaceService {
     public <S extends Astronaut> S save(S entity) {
         return astronautsRepository.save(entity);
     }
+
+    public void delete(Astronaut entity) {
+        astronautsRepository.delete(entity);
+    }
 }

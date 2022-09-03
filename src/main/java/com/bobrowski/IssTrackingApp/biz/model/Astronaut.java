@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor
@@ -23,4 +24,17 @@ public class Astronaut {
 
     @SerializedName(value = "craft")
     private String spaceship;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Astronaut astronaut = (Astronaut) o;
+        return Objects.equals(name, astronaut.name) && Objects.equals(spaceship, astronaut.spaceship);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, spaceship);
+    }
 }
