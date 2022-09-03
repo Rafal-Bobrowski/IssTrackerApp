@@ -16,5 +16,5 @@ Visualisation of current position and its trace.
 Paginated table containing position reports.
 ![Screen2](https://user-images.githubusercontent.com/103534928/188262477-9ab75596-1fd8-4b7e-961c-d1cc066b661b.PNG)
 
-Table with people in space.!
-[Screen3](https://user-images.githubusercontent.com/103534928/188262489-72158a70-b13c-4dd8-8569-b80d935c176f.PNG)
+Table with people in space.
+![Screen3](https://user-images.githubusercontent.com/103534928/188262489-72158a70-b13c-4dd8-8569-b80d935c176f.PNG)
