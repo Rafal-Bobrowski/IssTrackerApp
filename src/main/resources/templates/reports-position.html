@@ -10,7 +10,7 @@
     <link href="../../css/gtvg.css" media="all" rel="stylesheet"
           th:href="@{/css/gtvg.css}" type="text/css"/>
 
-    <script src="http://www.webglearth.com/v2/api.js"></script>
+    <script src="https://www.webglearth.com/v2/api.js"></script>
     <script>
       function initialize() {
         var positions = JSON.parse("[[${positions}]]".replace(/&quot;/g, '"')).filter((_, idx) => idx % 10 === 0);
@@ -36,7 +36,6 @@
                 requestAnimationFrame(animate);
             });
       }
-
     </script>
 
 </head>
