@@ -2,6 +2,9 @@
 This project I have made during my Java bootcamp. 
 The project was created for trainging purpose. 
 
+You can run project: https://tracker-iss.herokuapp.com/reports-position
+Starting server can take a while, so please be patient during first load.
+
 Some of used technologies:
 Java, Spring, Springboot, Hibernate, HTML, Bootstrap, HTTP, MVC.
 
